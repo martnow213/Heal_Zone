@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "101037265435",
+    "project_id": "healzone-ebbe8",
+    "storage_bucket": "healzone-ebbe8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101037265435:android:53ce6c4a7e39a04fbd9ebe",
+        "android_client_info": {
+          "package_name": "com.example.healzone"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2_4NUWuZ1k-gWZUaA0321dtwSbgTuHPs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

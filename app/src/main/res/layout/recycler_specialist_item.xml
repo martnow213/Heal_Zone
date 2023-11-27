@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="12dp"
+    android:background="@drawable/rounded_corner"
+    android:layout_marginVertical="8dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Imię i nazwisko"
+        android:id="@+id/specialists_name_text_view"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginVertical="4dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Numer tel"
+        android:id="@+id/specialists_number_text_view"
+        android:textSize="17sp"
+        android:layout_marginVertical="4dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        android:id="@+id/specialists_email_text_view"
+        android:textSize="17sp"
+        android:layout_marginVertical="4dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Adres"
+        android:id="@+id/specialists_address_text_view"
+        android:textSize="17sp"
+        android:layout_marginVertical="4dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Miasto"
+        android:id="@+id/specialists_city_text_view"
+        android:textSize="17sp"
+        android:layout_marginVertical="4dp"/>
+
+
+</LinearLayout>
