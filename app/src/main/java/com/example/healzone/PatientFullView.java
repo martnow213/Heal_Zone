@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,8 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -30,21 +27,22 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicReference;
+
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfWriter;
+
 
 
 public class PatientFullView extends AppCompatActivity {
 
-    String imie, nazwisko, pesel, data_ur, plec, diagnoza, notatki, docId, email, numer, nextVisitValue;
+    String imie, nazwisko, pesel, data_ur, plec, diagnoza, notatki, docId, email, numer, nextVisitValue, timeStamp;
     TextView nameField, surnameField, peselField, birthDateField, genderField, diagnosisField, notesField, emailField, numberField, notes1Field, diagnosis1Field, generatedPswField;
     Button progressBtn, calendarBtn, patientAccBtn;
     ImageButton editBtn, deleteBtn, pdfBtn;
@@ -177,11 +175,11 @@ public class PatientFullView extends AppCompatActivity {
             notes1Field.setVisibility(View.GONE);
         }
 
-        //pdfBtn = findViewById(R.id.pdf_btn);
+        pdfBtn = findViewById(R.id.pdf_btn);
 
-        //pdfBtn.setOnClickListener(v -> {
-            //downloadPdf(imie, nazwisko, pesel, data_ur, plec, email, numer, docId);
-       // });
+        pdfBtn.setOnClickListener(v -> {
+            downloadPdf(imie, nazwisko, pesel, data_ur, plec, email, numer, docId);
+        });
 
         DocumentReference patientRef = Utility.getCollectionReferenceForPatient().document(docId);
 
@@ -202,6 +200,93 @@ public class PatientFullView extends AppCompatActivity {
 
     }
 
+    void downloadPdf(String imie, String nazwisko, String pesel, String data_ur, String plec, String email, String numer, String docId) {
+        DocumentReference patientReference = Utility.getCollectionReferenceForPatient().document(docId);
+
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            File directory = new File(Environment.getExternalStorageDirectory(), "HealZonePDFs");
+
+            if (!directory.exists()) {
+                if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                    directory.mkdirs();
+                } else {
+                    requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                    return;
+                }
+            }
+            String filePath = directory.getPath() + "/" + imie + "_" + nazwisko + ".pdf";
+
+            Document document = new Document();
+
+            try {
+                PdfWriter.getInstance(document, new FileOutputStream(filePath));
+
+                document.open();
+
+                BaseFont baseFont = BaseFont.createFont("assets/AlegreyaSans-Black.otf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                BaseFont boldFont = BaseFont.createFont("assets/AlegreyaSans-Bold.otf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                com.itextpdf.text.Font polishFont = new com.itextpdf.text.Font(baseFont);
+                com.itextpdf.text.Font polishBoldFont = new com.itextpdf.text.Font(boldFont);
+
+                Paragraph header = new Paragraph("RAPORT PACJENTA nr " + docId, polishBoldFont);
+                header.setAlignment(Element.ALIGN_CENTER);
+                document.add(header);
+
+                document.add(Chunk.NEWLINE);
+                document.add(new Paragraph("DANE PACJENTA",polishBoldFont));
+                document.add(new Paragraph("Imię: " + imie, polishFont));
+                document.add(new Paragraph("Nazwisko: " + nazwisko, polishFont));
+                document.add(Chunk.NEWLINE);
+                document.add(new Paragraph("Płeć: " + plec, polishFont));
+                document.add(new Paragraph("PESEL: " + pesel, polishFont));
+                document.add(new Paragraph("Data urodzenia: " + data_ur, polishFont));
+                document.add(Chunk.NEWLINE);
+                document.add(new Paragraph("DANE KONTAKTOWE", polishBoldFont));
+                document.add(new Paragraph("Email: " + email, polishFont));
+                document.add(new Paragraph("Numer telefonu: " + numer, polishFont));
+
+                document.close();
+
+                Toast.makeText(this, "PDF wygenerowany pomyślnie. Zapisano w: " + filePath, Toast.LENGTH_SHORT).show();
+                openPdf(filePath);
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Błąd generowania PDF: Plik nie znaleziony", Toast.LENGTH_SHORT).show();
+            } catch (DocumentException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Błąd generowania PDF: Wyjątek dokumentu", Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Błąd odczytu czcionki", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(this, "Pamięć zewnętrzna niedostępna", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean isPdfViewerInstalled() {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setType("application/pdf");
+        return getPackageManager().resolveActivity(intent, 0) != null;
+    }
+
+    private void openPdf(String filePath) {
+        File file = new File(filePath);
+        Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".provider", file);
+
+        Intent pdfIntent = new Intent(Intent.ACTION_VIEW);
+        pdfIntent.setDataAndType(uri, "application/pdf");
+        pdfIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        if (isPdfViewerInstalled()) {
+            // Otwórz plik PDF przy użyciu zainstalowanej przeglądarki PDF
+            startActivity(pdfIntent);
+        } else {
+            // Jeśli brak zainstalowanej przeglądarki PDF, wyświetl komunikat
+            Toast.makeText(this, "Brak zainstalowanej przeglądarki PDF", Toast.LENGTH_SHORT).show();
+        }
+    }
     void deletePatient(){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(PatientFullView.this);
