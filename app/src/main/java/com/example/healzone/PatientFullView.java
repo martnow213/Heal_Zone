@@ -42,8 +42,8 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 public class PatientFullView extends AppCompatActivity {
 
-    String imie, nazwisko, pesel, data_ur, plec, diagnoza, notatki, docId, email, numer, nextVisitValue, timeStamp;
-    TextView nameField, surnameField, peselField, birthDateField, genderField, diagnosisField, notesField, emailField, numberField, notes1Field, diagnosis1Field, generatedPswField;
+    String imie, nazwisko, pesel, data_ur, plec, diagnoza, notatki, docId, email, numer, nextVisitValue, generatedPassword;
+    TextView nameField, surnameField, peselField, birthDateField, genderField, diagnosisField, notesField, emailField, numberField, notes1Field, diagnosis1Field, generatedPswField, generatedPswField1;
     Button progressBtn, calendarBtn, patientAccBtn;
     ImageButton editBtn, deleteBtn, pdfBtn;
     LinearLayout generatedPswLayout;
@@ -55,6 +55,7 @@ public class PatientFullView extends AppCompatActivity {
 
         generatedPswLayout = findViewById(R.id.generatedPswLayout);
         generatedPswField = findViewById(R.id.generated_psw_field);
+        generatedPswField1 = findViewById(R.id.generated_psw_field1);
 
         deleteBtn = findViewById(R.id.delete_patient_btn);
 
@@ -175,12 +176,6 @@ public class PatientFullView extends AppCompatActivity {
             notes1Field.setVisibility(View.GONE);
         }
 
-        pdfBtn = findViewById(R.id.pdf_btn);
-
-        pdfBtn.setOnClickListener(v -> {
-            downloadPdf(imie, nazwisko, pesel, data_ur, plec, email, numer, docId);
-        });
-
         DocumentReference patientRef = Utility.getCollectionReferenceForPatient().document(docId);
 
         patientRef.get().addOnCompleteListener(task -> {
@@ -189,18 +184,30 @@ public class PatientFullView extends AppCompatActivity {
                 if (document.exists()) {
                     if (document.getString("patientGeneratedPassword") == null || document.getString("patientGeneratedPassword").isEmpty()) {
                         progressBtn.setVisibility(View.GONE);
+                        generatedPswField.setVisibility(View.GONE);
+                        generatedPswField1.setVisibility(View.GONE);
                     }else {
                         patientAccBtn.setVisibility(View.GONE);
                         editBtn.setVisibility(View.GONE);
                         deleteBtn.setVisibility(View.VISIBLE);
+                        generatedPswField1.setVisibility(View.VISIBLE);
+                        generatedPswField.setVisibility(View.VISIBLE);
+                        generatedPassword = document.getString("patientGeneratedPassword");
+                        generatedPswField.setText(generatedPassword);
                     }
                 }
             }
         });
 
+        pdfBtn = findViewById(R.id.pdf_btn);
+
+        pdfBtn.setOnClickListener(v -> {
+            downloadPdf(imie, nazwisko, pesel, data_ur, plec, email, numer, docId, generatedPassword);
+        });
+
     }
 
-    void downloadPdf(String imie, String nazwisko, String pesel, String data_ur, String plec, String email, String numer, String docId) {
+    void downloadPdf(String imie, String nazwisko, String pesel, String data_ur, String plec, String email, String numer, String docId, String generatedPassword) {
         DocumentReference patientReference = Utility.getCollectionReferenceForPatient().document(docId);
 
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
@@ -244,6 +251,34 @@ public class PatientFullView extends AppCompatActivity {
                 document.add(new Paragraph("DANE KONTAKTOWE", polishBoldFont));
                 document.add(new Paragraph("Email: " + email, polishFont));
                 document.add(new Paragraph("Numer telefonu: " + numer, polishFont));
+                document.add(Chunk.NEWLINE);
+                if (generatedPassword != null){
+                    document.add(new Paragraph("Wygenerowane hasło: " + generatedPassword, polishFont));
+
+                    // Strona kopia dla pacjenta
+                    document.newPage();
+                    Paragraph copyHeader = new Paragraph("RAPORT - KOPIA DLA PACJENTA", polishBoldFont);
+                    copyHeader.setAlignment(Element.ALIGN_CENTER);
+                    document.add(copyHeader);
+
+                    document.add(Chunk.NEWLINE);
+                    document.add(new Paragraph("DANE PACJENTA", polishBoldFont));
+                    document.add(new Paragraph("Imię: " + imie, polishFont));
+                    document.add(new Paragraph("Nazwisko: " + nazwisko, polishFont));
+                    document.add(Chunk.NEWLINE);
+                    document.add(new Paragraph("Płeć: " + plec, polishFont));
+                    document.add(new Paragraph("PESEL: " + pesel, polishFont));
+                    document.add(new Paragraph("Data urodzenia: " + data_ur, polishFont));
+                    document.add(Chunk.NEWLINE);
+                    document.add(new Paragraph("DANE KONTAKTOWE", polishBoldFont));
+                    document.add(new Paragraph("Email: " + email, polishFont));
+                    document.add(new Paragraph("Numer telefonu: " + numer, polishFont));
+                    document.add(Chunk.NEWLINE);
+                    document.add(new Paragraph("Wygenerowane hasło: " + generatedPassword, polishBoldFont));
+                    document.add(Chunk.NEWLINE);
+                    document.add(new Paragraph("Zainstaluj aplikację HealZone na swoim urządzieniu, a następnie wybierz opcję logowania jako pacjent. Zaloguj się przy użyciu powyższego hasła. Hasło możesz zmienić w dowolnym momencie w ustawieniach swojego konta. W razie problemów skonsultuj się ze swoim specjalistą.",polishFont));
+
+                }
 
                 document.close();
 
