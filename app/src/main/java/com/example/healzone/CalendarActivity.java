@@ -348,8 +348,6 @@ public class CalendarActivity extends AppCompatActivity {
                 year, month + 1, dayOfMonth);
         updateHourState(selectedHour,formattedDate);
 
-        Toast.makeText(this, "Wybrana data: " + formattedDate + "\nWybrana godzina: " + selectedHour + "\nWybrany pacjent: " + selectedPatient, Toast.LENGTH_SHORT).show();
-
         String patientsDocId = selectedPatientDocId;
 
         //Dodawanie wizyty do firebase
@@ -367,7 +365,7 @@ public class CalendarActivity extends AppCompatActivity {
         String createdId = documentReference.getId();
 
         documentReference.set(visit).addOnSuccessListener(aVoid -> {
-            Toast.makeText(CalendarActivity.this, "Wizyta dodana pomyślnie", Toast.LENGTH_SHORT).show();
+            Log.e("HandlePatientSelected", "Patient Selected");
             checkForVisits();
         }).addOnFailureListener(e -> Toast.makeText(CalendarActivity.this, "Błąd podczas dodawania wizyty", Toast.LENGTH_SHORT).show());
 
@@ -383,7 +381,6 @@ public class CalendarActivity extends AppCompatActivity {
         visit1.setDocId(patientsDocId);
 
         documentReference1.set(visit1).addOnSuccessListener(aVoid -> {
-            Toast.makeText(CalendarActivity.this, "Wizyta dodana pomyślnie", Toast.LENGTH_SHORT).show();
             checkForVisits();
         }).addOnFailureListener(e -> Toast.makeText(CalendarActivity.this, "Błąd podczas dodawania wizyty", Toast.LENGTH_SHORT).show());
 
@@ -418,7 +415,7 @@ public class CalendarActivity extends AppCompatActivity {
             updateMap.put(selectedHour, false);
 
             selectedDayHours.update(updateMap)
-                    .addOnSuccessListener(aVoid -> Toast.makeText(CalendarActivity.this, "Godzina zaktualizowana na false", Toast.LENGTH_SHORT).show())
+                    .addOnSuccessListener(aVoid -> Log.e("UpdateHourState", "Hour updated"))
                     .addOnFailureListener(e -> Toast.makeText(CalendarActivity.this, "Błąd podczas aktualizacji godziny", Toast.LENGTH_SHORT).show());
         }
     }
@@ -430,7 +427,7 @@ public class CalendarActivity extends AppCompatActivity {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String currentDate = dateFormat.format(new Date());
 
-        Query oldVisitsQuery = visitsCollection.whereLessThan("date", currentDate);
+        Query oldVisitsQuery = visitsCollection.whereLessThanOrEqualTo("date", currentDate);
 
         oldVisitsQuery.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {

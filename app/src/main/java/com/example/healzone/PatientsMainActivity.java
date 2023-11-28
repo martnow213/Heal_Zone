@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.ParseException;
@@ -71,6 +72,7 @@ public class PatientsMainActivity extends AppCompatActivity {
         nextVisitField = findViewById(R.id.nextvisit_field);
         nextVisitField1 = findViewById(R.id.nextvisit1_field);
 
+        deleteOldVisits();
         setUpNextVisit();
 
 
@@ -110,13 +112,12 @@ public class PatientsMainActivity extends AppCompatActivity {
         calendarBtn = findViewById(R.id.calendar_btn);
 
         calendarBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(PatientsMainActivity.this, PatientVisitsActivity.class);
+            Intent intent = new Intent(PatientsMainActivity.this, ThisPatientVisits.class);
             intent.putExtra("docId", docId);
+            Log.d("Intent content", "Przekazane docId: "+docId);
             startActivity(intent);
         });
 
-
-        //TODO: Przypomnienia o wizytach
     }
 
     void showMenu() {
@@ -271,6 +272,24 @@ public class PatientsMainActivity extends AppCompatActivity {
 
     interface PasswordCallback {
         void onResult(boolean isPasswordUnique);
+    }
+
+    //Usuwanie wizyt, które są z przeszłości
+    private void deleteOldVisits() {
+        CollectionReference visitsCollection = Utility.getCollectionReferenceForPatientAllVisits(docId);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String currentDate = dateFormat.format(new Date());
+
+        Query oldVisitsQuery = visitsCollection.whereLessThanOrEqualTo("data", currentDate);
+
+        oldVisitsQuery.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    document.getReference().delete();
+                }
+            }
+        });
     }
 
 

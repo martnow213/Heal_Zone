@@ -52,17 +52,10 @@ public class PatientVisitsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_visits);
 
-        pageTitle = findViewById(R.id.page_title);
 
         floatingActionButton = findViewById(R.id.add_visit_btn);
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser == null){
-            floatingActionButton.setVisibility(View.GONE);
 
-        }else {
-            pageTitle.setText("Wizyty pacjenta");
-        }
-
+        updateAvailableHours();
         docId = getIntent().getStringExtra("docId");
         DocumentReference dr = Utility.getCollectionReferenceForPatient().document(docId);
 
@@ -91,13 +84,15 @@ public class PatientVisitsActivity extends AppCompatActivity {
         floatingActionButton.setOnClickListener(v->{
             showDatePickerDialog(selectedPatient);
         });
+
+
         recyclerView = findViewById(R.id.patient_visits_recycler_view);
 
 
         deleteOldVisits();
         checkForVisits();
         setUpRecyclerView();
-        updateAvailableHours();
+
 
     }
 
@@ -369,7 +364,7 @@ public class PatientVisitsActivity extends AppCompatActivity {
         visit1.setDocId(patientsDocId);
 
         documentReference1.set(visit1).addOnSuccessListener(aVoid -> {
-            Toast.makeText(PatientVisitsActivity.this, "Wizyta dodana pomyślnie", Toast.LENGTH_SHORT).show();
+            Log.e("Visit", "Visit added");
         }).addOnFailureListener(e -> Toast.makeText(PatientVisitsActivity.this, "Błąd podczas dodawania wizyty", Toast.LENGTH_SHORT).show());
 
         //3.
@@ -384,7 +379,7 @@ public class PatientVisitsActivity extends AppCompatActivity {
         patientVisit.setDocId(patientsDocId);
 
         documentReference2.set(patientVisit).addOnSuccessListener(aVoid -> {
-            Toast.makeText(PatientVisitsActivity.this, "Wizyta dodana pomyślnie", Toast.LENGTH_SHORT).show();
+            Log.e("Visit", "Patient visit added");
             checkForVisits();
 
         }).addOnFailureListener(e -> Toast.makeText(PatientVisitsActivity.this, "Błąd podczas dodawania wizyty", Toast.LENGTH_SHORT).show());
@@ -404,7 +399,7 @@ public class PatientVisitsActivity extends AppCompatActivity {
             updateMap.put(selectedHour, false);
 
             selectedDayHours.update(updateMap)
-                    .addOnSuccessListener(aVoid -> Toast.makeText(PatientVisitsActivity.this, "Godzina zaktualizowana na false", Toast.LENGTH_SHORT).show())
+                    .addOnSuccessListener(aVoid -> Log.e("UpdateHourState", "Hour updated"))
                     .addOnFailureListener(e -> Toast.makeText(PatientVisitsActivity.this, "Błąd podczas aktualizacji godziny", Toast.LENGTH_SHORT).show());
         }
     }

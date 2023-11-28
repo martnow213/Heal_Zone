@@ -14,10 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
-public class PatientVisitAdapter extends FirestoreRecyclerAdapter<PatientVisit, PatientVisitAdapter.PatientVisitViewHolder> {
+public class ThisPatientVisitAdapter extends FirestoreRecyclerAdapter<PatientVisit, ThisPatientVisitAdapter.PatientVisitViewHolder> {
     Context context;
 
-    public PatientVisitAdapter(@NonNull FirestoreRecyclerOptions<PatientVisit> options, Context context) {
+    public ThisPatientVisitAdapter(@NonNull FirestoreRecyclerOptions<PatientVisit> options, Context context) {
         super(options);
         this.context = context;
     }
@@ -26,16 +26,6 @@ public class PatientVisitAdapter extends FirestoreRecyclerAdapter<PatientVisit, 
     protected void onBindViewHolder(@NonNull PatientVisitViewHolder holder, int position, @NonNull PatientVisit patientVisit) {
         holder.patientVisitTimeTextView.setText("Godzina: "+patientVisit.getCzas());
         holder.patientVisitDateTextView.setText("Data: "+patientVisit.getData());
-
-        holder.itemView.setOnClickListener(v->{
-            Intent intent = new Intent(context,VisitFullView.class);
-            intent.putExtra("date",patientVisit.data);
-            intent.putExtra("time",patientVisit.czas);
-            intent.putExtra("docId",patientVisit.docId);
-            String thisDocId = this.getSnapshots().getSnapshot(position).getId();
-            intent.putExtra("thisDocId",thisDocId);
-            context.startActivity(intent);
-        });
 
     }
 

@@ -48,7 +48,10 @@ public class VisitFullView extends AppCompatActivity {
         docId = getIntent().getStringExtra("docId");
         thisDocId = getIntent().getStringExtra("thisDocId");
 
-        patientTextView.setText(patient);
+        if (patient==null){
+            patient1Field.setVisibility(View.GONE);
+        }else{
+        patientTextView.setText(patient);}
 
 
         deleteVisitBtn.setOnClickListener(v->{
@@ -70,35 +73,15 @@ public class VisitFullView extends AppCompatActivity {
 
             DocumentReference documentReference;
             documentReference = Utility.getCollectionReferenceForVisit(docId).document(thisDocId);
-            documentReference.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(VisitFullView.this, "Wizyta usunięta pomyślnie", Toast.LENGTH_SHORT).show();
-                        deleteVisitFromFirebase(date, time);
-                        Intent intent = new Intent(VisitFullView.this, CalendarActivity.class);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        Toast.makeText(VisitFullView.this, "Błąd podczas usuwania wizyty", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-
-            DocumentReference documentReference1;
-            documentReference1 = Utility.getCollectionReferenceForAllVisits().document(thisDocId);
-            documentReference1.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(VisitFullView.this, "Wizyta usunięta pomyślnie", Toast.LENGTH_SHORT).show();
-                        deleteVisitFromFirebase(date, time);
-                        Intent intent = new Intent(VisitFullView.this, CalendarActivity.class);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        Toast.makeText(VisitFullView.this, "Błąd podczas usuwania wizyty", Toast.LENGTH_SHORT).show();
-                    }
+            documentReference.delete().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Toast.makeText(VisitFullView.this, "Wizyta usunięta pomyślnie", Toast.LENGTH_SHORT).show();
+                    deleteVisitFromFirebase(date, time);
+                    Intent intent = new Intent(VisitFullView.this, CalendarActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(VisitFullView.this, "Błąd podczas usuwania wizyty", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -110,10 +93,6 @@ public class VisitFullView extends AppCompatActivity {
     }
 
     void deleteVisitFromFirebase(String date, String time){
-        DocumentReference documentReference;
-        documentReference = Utility.getCollectionReferenceForVisit(docId).document(thisDocId);
-        documentReference.delete();
-
         DocumentReference documentReference1;
         documentReference1 = Utility.getCollectionReferenceForAllVisits().document(thisDocId);
         documentReference1.delete();
@@ -138,7 +117,7 @@ public class VisitFullView extends AppCompatActivity {
             updateMap.put(selectedHour, true);
 
             selectedDayHours.update(updateMap)
-                    .addOnSuccessListener(aVoid -> Toast.makeText(VisitFullView.this, "Godzina zaktualizowana na true", Toast.LENGTH_SHORT).show())
+                    .addOnSuccessListener(aVoid -> Log.e("UpdateHourState", "Hour updated"))
                     .addOnFailureListener(e -> Toast.makeText(VisitFullView.this, "Błąd podczas aktualizacji godziny", Toast.LENGTH_SHORT).show());
         }
     }

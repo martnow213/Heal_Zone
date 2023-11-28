@@ -106,23 +106,4 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/register_layout"
-        android:layout_marginTop="12dp"
-        android:orientation="horizontal"
-        android:gravity="center">
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nie pamiętasz hasła?"
-            android:id="@+id/password_reminder_view_btn"
-            android:textStyle="bold"/>
-
-
-    </LinearLayout>
-
 </RelativeLayout>

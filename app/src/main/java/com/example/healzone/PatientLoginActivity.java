@@ -25,6 +25,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class PatientLoginActivity extends AppCompatActivity {
 
@@ -59,7 +62,6 @@ public class PatientLoginActivity extends AppCompatActivity {
 
         boolean isValidated = validateData(email, password);
         if(isValidated){
-
             Intent intent = new Intent(PatientLoginActivity.this, PatientsMainActivity.class);
             startActivity(intent);
         }
@@ -162,7 +164,4 @@ public class PatientLoginActivity extends AppCompatActivity {
         return false; // Nie znaleziono dużej litery
     }
 
-    public static void SetStatusAsLoggedInFirebase(){
-        //TODO: Ustawienie 1 na logged w Firebase, lub 0 po wylogowaniu
-    }
 }

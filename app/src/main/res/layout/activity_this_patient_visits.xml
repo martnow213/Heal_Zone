@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:background="@drawable/base"
-    tools:context=".PatientVisitsActivity">
+    tools:context=".ThisPatientVisits">
 
 
     <RelativeLayout
@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/page_title"
-            android:text="Wizyty pacjenta:"
+            android:text="Twoje wizyty:"
             android:textColor="@color/black"
             android:textSize="32sp"
             android:textStyle="bold"/>
@@ -54,13 +54,5 @@
         android:layout_centerVertical="true"
         android:visibility="gone"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:id="@+id/add_visit_btn"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:src="@drawable/baseline_add_24"/>
 
 </RelativeLayout>

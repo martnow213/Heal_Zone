@@ -32,7 +32,6 @@ public class Utility {
     }
 
     public static CollectionReference getCollectionReferenceForPatientAllVisits(String docId){
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         return FirebaseFirestore.getInstance().collection("patient_all_visits").document(docId).collection("visits");
 
     }
@@ -148,6 +147,7 @@ public class Utility {
                 .get();
     }
 
+    //Wykorzystywane przy założeniu nowego konta specjalisty, pózniej update w innej metodzie:
     public static void generateAvailableHours(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
