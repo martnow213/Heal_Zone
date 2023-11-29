@@ -8,6 +8,15 @@
     android:background="@drawable/base"
     tools:context=".PatientVisitsActivity">
 
+    <ImageButton
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:id="@+id/refresh_btn"
+        android:src="@drawable/baseline_refresh_24"
+        android:layout_alignParentEnd="true"
+
+        android:background="?attr/selectableItemBackgroundBorderless"/>
+
 
     <RelativeLayout
         android:layout_width="match_parent"

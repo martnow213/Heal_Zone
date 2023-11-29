@@ -44,8 +44,8 @@ public class PatientFullView extends AppCompatActivity {
 
     String imie, nazwisko, pesel, data_ur, plec, diagnoza, notatki, docId, email, numer, nextVisitValue, generatedPassword;
     TextView nameField, surnameField, peselField, birthDateField, genderField, diagnosisField, notesField, emailField, numberField, notes1Field, diagnosis1Field, generatedPswField, generatedPswField1;
-    Button progressBtn, calendarBtn, patientAccBtn;
-    ImageButton editBtn, deleteBtn, pdfBtn;
+    Button progressBtn, patientAccBtn;
+    ImageButton editBtn, deleteBtn, pdfBtn, calendarBtn;
     LinearLayout generatedPswLayout;
 
     @Override
@@ -187,6 +187,7 @@ public class PatientFullView extends AppCompatActivity {
                         generatedPswField.setVisibility(View.GONE);
                         generatedPswField1.setVisibility(View.GONE);
                     }else {
+                        progressBtn.setVisibility(View.VISIBLE);
                         patientAccBtn.setVisibility(View.GONE);
                         editBtn.setVisibility(View.GONE);
                         deleteBtn.setVisibility(View.VISIBLE);

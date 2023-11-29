@@ -138,7 +138,7 @@ public class PatientLoginActivity extends AppCompatActivity {
                     intent.putExtra("specialistName",specialistName);
                     intent.putExtra("specialistNumber",specialistNumber);
                     intent.putExtra("specialistEmail",specialistEmail);
-                    intent.putExtra("nextVisit", nextVisit);
+                    //intent.putExtra("nextVisit", nextVisit);
 
                     startActivity(intent);
                     return;

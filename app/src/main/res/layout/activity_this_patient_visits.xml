@@ -19,7 +19,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/page_title"
             android:text="Twoje wizyty:"
-            android:textColor="@color/black"
             android:textSize="32sp"
             android:textStyle="bold"/>
 

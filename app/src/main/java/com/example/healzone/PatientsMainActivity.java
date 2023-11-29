@@ -41,10 +41,10 @@ import javax.security.auth.callback.PasswordCallback;
 
 public class PatientsMainActivity extends AppCompatActivity {
 
-    ImageButton menuBtn;
-    Button progressBtn, calendarBtn;
+    ImageButton menuBtn, calendarBtn;
+    Button progressBtn;
     String docId, patientName, patientSurname, patientEmail, patientNumber, patientPassword, specialistName, specialistNumber, specialistEmail, nextVisit;
-    TextView nameField, surnameField, emailField, phoneField, specialistNameInfo, specialistEmailInfo, specialistNumberInfo, nextVisitField, nextVisitField1;
+    TextView nameField, specialistNameInfo, specialistEmailInfo, specialistNumberInfo, nextVisitField, nextVisitField1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,14 +60,7 @@ public class PatientsMainActivity extends AppCompatActivity {
         patientPassword = getIntent().getStringExtra("patientPassword");
 
         nameField = findViewById(R.id.name_field);
-        nameField.setText(patientName);
-        surnameField = findViewById(R.id.surname_field);
-        surnameField.setText(patientSurname);
-        emailField = findViewById(R.id.email_field);
-        emailField.setText(patientEmail);
-        phoneField = findViewById(R.id.phone_field);
-        phoneField.setText(patientNumber);
-
+        nameField.setText(patientName + "!");
 
         nextVisitField = findViewById(R.id.nextvisit_field);
         nextVisitField1 = findViewById(R.id.nextvisit1_field);

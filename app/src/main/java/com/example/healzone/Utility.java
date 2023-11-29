@@ -57,10 +57,6 @@ public class Utility {
 
     }
 
-    public static Query getAllPatientsQuery() {
-        return getCollectionReferenceForPatient().orderBy("patientName", Query.Direction.ASCENDING);
-    }
-
 
     public static String timeStampToString(Timestamp timestamp){
         return new SimpleDateFormat("dd/MM/yyyy").format(timestamp.toDate());

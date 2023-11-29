@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -53,6 +54,7 @@ public class CalendarActivity extends AppCompatActivity {
     FloatingActionButton dodajWizyteButton;
     RecyclerView recyclerView;
     VisitAdapter visitAdapter;
+    ImageButton refreshBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +72,12 @@ public class CalendarActivity extends AppCompatActivity {
         dodajWizyteButton = findViewById(R.id.add_visit_btn);
 
         dodajWizyteButton.setOnClickListener(v -> showDatePickerDialog());
+
+        refreshBtn = findViewById(R.id.refresh_btn);
+        refreshBtn.setOnClickListener(v->{
+            Intent intent = new Intent(CalendarActivity.this,CalendarActivity.class);
+            startActivity(intent);
+        });
     }
 
     //WYŚWIETLENIE DATE PICKER - wybór daty

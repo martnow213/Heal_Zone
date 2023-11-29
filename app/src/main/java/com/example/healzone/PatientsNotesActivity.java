@@ -44,6 +44,8 @@ public class PatientsNotesActivity extends AppCompatActivity {
         struggles = getIntent().getStringExtra("struggles");
         extraNotes = getIntent().getStringExtra("extraNotes");
 
+        checkForNotes(docId);
+
         recyclerView = findViewById(R.id.patient_notes_recycler_view);
         setUpRecyclerView();
 
@@ -71,6 +73,21 @@ public class PatientsNotesActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         progressNoteAdapter = new ProgressNoteAdapter(options,this);
         recyclerView.setAdapter(progressNoteAdapter);
+    }
+
+    private void checkForNotes(String docId) {
+        CollectionReference patientsCollection = Utility.getCollectionReferenceForProgressNote(docId);
+        patientsCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            if (queryDocumentSnapshots.isEmpty()) {
+                findViewById(R.id.no_notes_message).setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+            } else {
+                findViewById(R.id.no_notes_message).setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+            }
+        }).addOnFailureListener(e -> {
+            Toast.makeText(this, "Błąd podczas sprawdzania wpisów", Toast.LENGTH_SHORT).show();
+        });
     }
 
 

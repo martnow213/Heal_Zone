@@ -3,7 +3,6 @@ package com.example.healzone;
 import static com.example.healzone.Utility.generateAvailableHours;
 import static com.example.healzone.Utility.hasUpperCaseLetter;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -12,17 +11,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 
@@ -30,7 +24,6 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     EditText emailEditText, passwordEditText, confirmPasswordEditText;
     Button createAccountBtn;
-    ProgressBar progressBar;
     TextView loginBtnTextView, hello, registerText;
     EditText nameEditText, surnameEditText, phoneNumberEditText, cityEditText, streetEditText, buildingNumberEditText;
 
@@ -46,7 +39,6 @@ public class CreateAccountActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.password_edit_text);
         confirmPasswordEditText = findViewById(R.id.confirm_password_edit_text);
         createAccountBtn = findViewById(R.id.create_account_btn);
-        progressBar = findViewById(R.id.progress_bar);
         loginBtnTextView = findViewById(R.id.login_text_view_btn);
         hello = findViewById(R.id.hello);
         registerText = findViewById(R.id.registertext);
@@ -84,11 +76,10 @@ public class CreateAccountActivity extends AppCompatActivity {
     }
 
     void createAccountInFirebase(String email, String password, String name, String surname, String phoneNumber, String city, String street, String building) {
-        changeInProgress(true);
+
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(CreateAccountActivity.this, task -> {
-            changeInProgress(false);
             if (task.isSuccessful()) {
 
                 Specialist specialist = new Specialist();
@@ -140,16 +131,6 @@ public class CreateAccountActivity extends AppCompatActivity {
                 Toast.makeText(CreateAccountActivity.this, "Błąd podczas dodawania specjalisty", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    void changeInProgress(boolean inProgress) {
-        if (inProgress) {
-            progressBar.setVisibility(View.VISIBLE);
-            createAccountBtn.setVisibility(View.GONE);
-        } else {
-            progressBar.setVisibility(View.GONE);
-            createAccountBtn.setVisibility(View.VISIBLE);
-        }
     }
 
 

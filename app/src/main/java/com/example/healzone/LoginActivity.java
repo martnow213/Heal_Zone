@@ -22,7 +22,6 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText emailEditText, passwordEditText;
     Button loginBtn;
-    ProgressBar progressBar;
     TextView createAccountBtnTextView, passwordReminderBtnTextView;
 
     @Override
@@ -34,7 +33,6 @@ public class LoginActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.email_edit_text);
         passwordEditText = findViewById(R.id.password_edit_text);
         loginBtn = findViewById(R.id.login_btn);
-        progressBar = findViewById(R.id.progress_bar);
         passwordReminderBtnTextView = findViewById(R.id.password_reminder_view_btn);
         createAccountBtnTextView = findViewById(R.id.create_account_text_view_btn);
 
@@ -57,9 +55,7 @@ public class LoginActivity extends AppCompatActivity {
 
     void LoginInFirebase(String email, String password){
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        changeInProgress(true);
         firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(task -> {
-            changeInProgress(false);
             if (task.isSuccessful()){
                 if (firebaseAuth.getCurrentUser().isEmailVerified()){
                     startActivity(new Intent(LoginActivity.this,PatientsList.class));
@@ -70,16 +66,6 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this,task.getException().getLocalizedMessage(),Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    void changeInProgress(boolean inProgress){
-        if(inProgress){
-            progressBar.setVisibility(View.VISIBLE);
-            loginBtn.setVisibility(View.GONE);
-        }else{
-            progressBar.setVisibility(View.GONE);
-            loginBtn.setVisibility(View.VISIBLE);
-        }
     }
 
     boolean validateData(String email, String password){

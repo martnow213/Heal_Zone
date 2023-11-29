@@ -13,6 +13,7 @@ import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,8 +45,8 @@ public class PatientVisitsActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     PatientVisitAdapter patientVisitAdapter;
     String docId, selectedPatient;
-    TextView pageTitle;
     FloatingActionButton floatingActionButton;
+    ImageButton refreshBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +93,13 @@ public class PatientVisitsActivity extends AppCompatActivity {
         deleteOldVisits();
         checkForVisits();
         setUpRecyclerView();
+
+        refreshBtn = findViewById(R.id.refresh_btn);
+        refreshBtn.setOnClickListener(v->{
+            Intent intent = new Intent(PatientVisitsActivity.this, PatientVisitsActivity.class);
+            intent.putExtra("docId",docId);
+            startActivity(intent);
+        });
 
 
     }
