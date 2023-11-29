@@ -488,7 +488,7 @@ public class CalendarActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(CalendarActivity.this, MainActivity.class);
+        Intent intent = new Intent(CalendarActivity.this, PatientsList.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();

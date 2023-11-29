@@ -30,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
         emailEditText = findViewById(R.id.email_edit_text);
         passwordEditText = findViewById(R.id.password_edit_text);
         loginBtn = findViewById(R.id.login_btn);
@@ -61,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
             changeInProgress(false);
             if (task.isSuccessful()){
                 if (firebaseAuth.getCurrentUser().isEmailVerified()){
-                    startActivity(new Intent(LoginActivity.this,MainActivity.class));
+                    startActivity(new Intent(LoginActivity.this,PatientsList.class));
                 }else {
                     Toast.makeText(LoginActivity.this, "Potwierdź email w celu weryfikacji konta", Toast.LENGTH_SHORT).show();
                 }

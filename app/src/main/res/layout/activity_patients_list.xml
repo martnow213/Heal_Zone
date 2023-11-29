@@ -8,6 +8,7 @@
     android:padding="16dp"
     tools:context=".PatientsList">
 
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,12 +33,36 @@
 
     </RelativeLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/buttonsLayout">
+
+
+        <ImageButton
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:id="@+id/calendar_btn"
+            android:src="@drawable/baseline_calendar_month_24"
+
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+        <ImageButton
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:id="@+id/menu_btn"
+            android:src="@drawable/baseline_menu_24"
+
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+
+    </LinearLayout>
+
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/title_bar_layout"
-        android:layout_below="@+id/search_bar_layout">
+        android:id="@+id/title_bar_layout">
 
         <TextView
             android:layout_width="wrap_content"

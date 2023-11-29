@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.security.SecureRandom;
@@ -56,8 +57,12 @@ public class Utility {
 
     }
 
+    public static Query getAllPatientsQuery() {
+        return getCollectionReferenceForPatient().orderBy("patientName", Query.Direction.ASCENDING);
+    }
 
-    static String timeStampToString(Timestamp timestamp){
+
+    public static String timeStampToString(Timestamp timestamp){
         return new SimpleDateFormat("dd/MM/yyyy").format(timestamp.toDate());
     }
 

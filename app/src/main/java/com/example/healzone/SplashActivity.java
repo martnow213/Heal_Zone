@@ -23,7 +23,7 @@ public class SplashActivity extends AppCompatActivity {
             if (currentUser==null){
                 startActivity(new Intent(SplashActivity.this, ChooseLoginActivity.class));
             }else {
-                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                startActivity(new Intent(SplashActivity.this, PatientsList.class));
 
             }
             finish();

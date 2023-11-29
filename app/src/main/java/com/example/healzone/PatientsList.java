@@ -1,19 +1,25 @@
 package com.example.healzone;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.Query;
 
 public class PatientsList extends AppCompatActivity {
@@ -21,8 +27,7 @@ public class PatientsList extends AppCompatActivity {
     FloatingActionButton addPatientBtn;
     RecyclerView recyclerView;
     PatientAdapter patientAdapter;
-    EditText searchPatientEditText;
-    ImageButton searchButton;
+    ImageButton menuBtn, calendarBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,14 +42,63 @@ public class PatientsList extends AppCompatActivity {
         addPatientBtn = findViewById(R.id.add_patient_btn);
         addPatientBtn.setOnClickListener(v-> startActivity(new Intent(PatientsList.this, PatientDetailsActivity.class)));
 
-        searchPatientEditText = findViewById(R.id.search_patient);
-        searchButton = findViewById(R.id.search_btn);
+        menuBtn = findViewById(R.id.menu_btn);
+        menuBtn.setOnClickListener(v->showMenu());
 
-        searchButton.setOnClickListener(v -> searchPatients());
+        calendarBtn = findViewById(R.id.calendar_btn);
+        calendarBtn.setOnClickListener(v->{
+            Intent intent = new Intent(PatientsList.this, CalendarActivity.class);
+            startActivity(intent);
+        });
+
+
     }
 
-    void searchPatients() {
-        //TODO: Logika wyszukiwania pacjentów
+    void showMenu(){
+        PopupMenu popupMenu = new PopupMenu(PatientsList.this, menuBtn);
+        popupMenu.getMenu().add("Wyloguj");
+        popupMenu.getMenu().add("Usuń konto");
+        popupMenu.show();
+        popupMenu.setOnMenuItemClickListener(menuItem -> {
+            if(menuItem.getTitle()=="Wyloguj"){
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(PatientsList.this, ChooseLoginActivity.class));
+                finish();
+                return true;
+            } else if (menuItem.getTitle()=="Usuń konto") {
+                deleteFirebaseAccount();
+                return true;}
+            return false;
+        });
+    }
+
+    private void deleteFirebaseAccount() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(PatientsList.this);
+        builder.setMessage("Czy na pewno chcesz trwale usunąć konto i wszystkie związane z nim dane?");
+        builder.setPositiveButton("Tak", (dialog, which) -> {
+            deleteFromSpecialists();
+            FirebaseAuth.getInstance().getCurrentUser().delete()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(PatientsList.this, "Konto usunięte", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(PatientsList.this, ChooseLoginActivity.class));
+                            finish();
+                        } else {
+                            Toast.makeText(PatientsList.this, "Błąd podczas usuwania konta", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        });
+        builder.setNegativeButton("Nie", (dialog, which) -> {
+            dialog.dismiss();
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    void deleteFromSpecialists(){
+        DocumentReference documentReference;
+        documentReference = Utility.getCollectionReferenceForSpecialist().document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        documentReference.delete();
     }
 
 
@@ -88,13 +142,5 @@ public class PatientsList extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         patientAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(PatientsList.this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
     }
 }
