@@ -5,8 +5,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Query;
 
 public class ThisPatientVisits extends AppCompatActivity {
@@ -24,6 +27,7 @@ public class ThisPatientVisits extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.patient_visits_recycler_view);
 
+        checkForVisits();
         setUpRecyclerView();
     }
 
@@ -36,6 +40,21 @@ public class ThisPatientVisits extends AppCompatActivity {
         thisPatientVisitAdapter = new ThisPatientVisitAdapter(options,this);
         recyclerView.setAdapter(thisPatientVisitAdapter);
 
+    }
+
+    private void checkForVisits() {
+        CollectionReference allVisitsCollection = Utility.getCollectionReferenceForPatientAllVisits(docId);
+        allVisitsCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            if (queryDocumentSnapshots.isEmpty()) {
+                findViewById(R.id.no_visits_msg).setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+            } else {
+                findViewById(R.id.no_visits_msg).setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+            }
+        }).addOnFailureListener(e -> {
+            Toast.makeText(this, "Błąd podczas sprawdzania wizyt", Toast.LENGTH_SHORT).show();
+        });
     }
     @Override
     protected void onStart() {
