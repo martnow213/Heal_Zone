@@ -313,13 +313,19 @@ public class PatientsMainActivity extends AppCompatActivity {
                         Log.d("SortedDateAndTime", sortedDateAndTime);
                     }
 
-                    nextVisit = dateAndTimeList.get(0);
+                    if(dateAndTimeList.isEmpty()){
+                        nextVisitField.setText("Brak wizyty");
+                    }else{
+                        nextVisit = dateAndTimeList.get(0);
 
-                    nextVisitField.setText(nextVisit);
-
-                    if (nextVisit == null || nextVisit.isEmpty()) {
-                        nextVisitField1.setVisibility(View.GONE);
+                        nextVisitField.setText(nextVisit);
                     }
+
+
+
+                    //if (nextVisit == null || nextVisit.isEmpty()) {
+                    //    nextVisitField1.setVisibility(View.GONE);
+                   // }
                 });
 
     }
