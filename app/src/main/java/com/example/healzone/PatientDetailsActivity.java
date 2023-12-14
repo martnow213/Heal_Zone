@@ -17,6 +17,8 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 
 import java.text.ParseException;
@@ -102,7 +104,7 @@ public class PatientDetailsActivity extends AppCompatActivity {
     //Logika usuwania pacjenta z bazy
     void deletePatientFromFirebase(){
         AlertDialog.Builder builder = new AlertDialog.Builder(PatientDetailsActivity.this);
-        builder.setMessage("Czy na pewno chcesz trwale usunąć pacjenta, jego konto i wszystkie związane z nim dane?");
+        builder.setMessage("Czy na pewno chcesz trwale usunąć pacjenta? \n \n Jeśli masz zaplanowane wizyty dla tego pacjenta, pozostaną one w Twoim kalendarzu.");
         builder.setPositiveButton("Tak", (dialog, which) -> {
 
             DocumentReference documentReference;
@@ -388,6 +390,13 @@ public class PatientDetailsActivity extends AppCompatActivity {
         //Email
         if(!Patterns.EMAIL_ADDRESS.matcher(patientEmail).matches()){
             patientEmailEditText.setError("Email nieprawidłowy");
+            return false;
+        }
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        String yourEmail = currentUser.getEmail();
+        if (yourEmail.equalsIgnoreCase(patientEmail)){
+            patientEmailEditText.setError("Nie możesz użyć swojego adresu email");
             return false;
         }
 

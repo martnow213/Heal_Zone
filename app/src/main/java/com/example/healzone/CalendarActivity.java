@@ -9,6 +9,8 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,6 +37,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -60,6 +63,20 @@ public class CalendarActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
+
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        System.out.println("Fetching FCM registration token failed");
+                        return;
+                    }
+
+                    // Get new FCM registration token
+                    String token = task.getResult();
+
+                    // Log and toast
+                    System.out.println(token);
+                });
 
         checkForVisits();
         deleteOldVisits();
@@ -119,6 +136,7 @@ public class CalendarActivity extends AppCompatActivity {
                 }
             });
         }
+
 
         datePickerDialog.show();
     }
@@ -407,6 +425,13 @@ public class CalendarActivity extends AppCompatActivity {
             Toast.makeText(CalendarActivity.this, "Wizyta dodana pomyślnie", Toast.LENGTH_SHORT).show();
             checkForVisits();
         }).addOnFailureListener(e -> Toast.makeText(CalendarActivity.this, "Błąd podczas dodawania wizyty", Toast.LENGTH_SHORT).show());
+
+        finish();
+
+        // Uruchom aktywność ponownie
+        Intent intent = new Intent(CalendarActivity.this, CalendarActivity.class);
+        startActivity(intent);
+
     }
 
 

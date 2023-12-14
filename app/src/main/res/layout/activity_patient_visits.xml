@@ -8,14 +8,33 @@
     android:background="@drawable/base"
     tools:context=".PatientVisitsActivity">
 
-    <ImageButton
-        android:layout_width="38dp"
-        android:layout_height="38dp"
-        android:id="@+id/refresh_btn"
-        android:src="@drawable/baseline_refresh_24"
-        android:layout_alignParentEnd="true"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonsLayout">
 
-        android:background="?attr/selectableItemBackgroundBorderless"/>
+        <ImageButton
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:id="@+id/refresh_btn"
+            android:src="@drawable/baseline_refresh_24"
+            android:layout_alignParentEnd="true"
+
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+
+        <ImageButton
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:id="@+id/calendar_btn"
+            android:layout_marginRight="40dp"
+            android:src="@drawable/baseline_calendar_month_24"
+            android:layout_alignParentEnd="true"
+
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+
+    </RelativeLayout>
+
+
 
 
     <RelativeLayout
@@ -28,7 +47,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/page_title"
             android:text="Wizyty pacjenta:"
-            android:textColor="@color/black"
             android:textSize="32sp"
             android:textStyle="bold"/>
 

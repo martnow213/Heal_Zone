@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Potwierdź email w celu weryfikacji konta", Toast.LENGTH_SHORT).show();
                 }
             }else{
-                Toast.makeText(LoginActivity.this,task.getException().getLocalizedMessage(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this,"Nieprawidłowe dane logowania",Toast.LENGTH_SHORT).show();
             }
         });
     }

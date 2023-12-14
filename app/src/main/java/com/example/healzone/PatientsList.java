@@ -1,11 +1,19 @@
 package com.example.healzone;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,11 +24,19 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import java.util.Calendar;
 
 public class PatientsList extends AppCompatActivity {
 
@@ -54,6 +70,7 @@ public class PatientsList extends AppCompatActivity {
 
     }
 
+
     void showMenu(){
         PopupMenu popupMenu = new PopupMenu(PatientsList.this, menuBtn);
         popupMenu.getMenu().add("Wyloguj");
@@ -62,6 +79,7 @@ public class PatientsList extends AppCompatActivity {
         popupMenu.setOnMenuItemClickListener(menuItem -> {
             if(menuItem.getTitle()=="Wyloguj"){
                 FirebaseAuth.getInstance().signOut();
+                Toast.makeText(PatientsList.this, "Wylogowano pomyślnie", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(PatientsList.this, ChooseLoginActivity.class));
                 finish();
                 return true;
@@ -74,7 +92,7 @@ public class PatientsList extends AppCompatActivity {
 
     private void deleteFirebaseAccount() {
         AlertDialog.Builder builder = new AlertDialog.Builder(PatientsList.this);
-        builder.setMessage("Czy na pewno chcesz trwale usunąć konto i wszystkie związane z nim dane?");
+        builder.setMessage("Przed usunięciem konta, upewnij się czy nie powinieneś usunąć kont swoich pacjentów. \n \nCzy na pewno chcesz trwale usunąć konto?");
         builder.setPositiveButton("Tak", (dialog, which) -> {
             deleteFromSpecialists();
             FirebaseAuth.getInstance().getCurrentUser().delete()
@@ -99,6 +117,24 @@ public class PatientsList extends AppCompatActivity {
         DocumentReference documentReference;
         documentReference = Utility.getCollectionReferenceForSpecialist().document(FirebaseAuth.getInstance().getCurrentUser().getUid());
         documentReference.delete();
+
+        DocumentReference documentReference1;
+        documentReference1 = Utility.getCollectionReferenceForAllVisits().document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        documentReference1.delete();
+
+        DocumentReference documentReference2;
+        documentReference2 = Utility.getCollectionReferenceForPatient().document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        documentReference2.delete();
+
+        DocumentReference documentReference3;
+        documentReference3 = FirebaseFirestore.getInstance().collection("visits").document(FirebaseAuth.getInstance().getCurrentUser().getUid());;
+        documentReference3.delete();
+
+        DocumentReference documentReference4;
+        documentReference4 = FirebaseFirestore.getInstance().collection("availableHours").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        documentReference4.delete();
+
+
     }
 
 
@@ -142,5 +178,13 @@ public class PatientsList extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         patientAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(PatientsList.this, PatientsList.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 }

@@ -123,6 +123,7 @@ public class PatientsMainActivity extends AppCompatActivity {
                 showChangePasswordDialog(); // Wywołaj funkcję do zmiany hasła
                 return true;
             } else if (menuItem.getTitle().equals("Wyloguj")) {
+                Toast.makeText(PatientsMainActivity.this, "Wylogowano pomyślnie", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(PatientsMainActivity.this, ChooseLoginActivity.class));
                 finish();
                 return true;
@@ -321,11 +322,6 @@ public class PatientsMainActivity extends AppCompatActivity {
                         nextVisitField.setText(nextVisit);
                     }
 
-
-
-                    //if (nextVisit == null || nextVisit.isEmpty()) {
-                    //    nextVisitField1.setVisibility(View.GONE);
-                   // }
                 });
 
     }

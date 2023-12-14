@@ -46,7 +46,7 @@ public class PatientVisitsActivity extends AppCompatActivity {
     PatientVisitAdapter patientVisitAdapter;
     String docId, selectedPatient;
     FloatingActionButton floatingActionButton;
-    ImageButton refreshBtn;
+    ImageButton refreshBtn, calendarBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +98,12 @@ public class PatientVisitsActivity extends AppCompatActivity {
         refreshBtn.setOnClickListener(v->{
             Intent intent = new Intent(PatientVisitsActivity.this, PatientVisitsActivity.class);
             intent.putExtra("docId",docId);
+            startActivity(intent);
+        });
+
+        calendarBtn = findViewById(R.id.calendar_btn);
+        calendarBtn.setOnClickListener(v->{
+            Intent intent = new Intent(PatientVisitsActivity.this, CalendarActivity.class);
             startActivity(intent);
         });
 
@@ -391,6 +397,14 @@ public class PatientVisitsActivity extends AppCompatActivity {
             checkForVisits();
 
         }).addOnFailureListener(e -> Toast.makeText(PatientVisitsActivity.this, "Błąd podczas dodawania wizyty", Toast.LENGTH_SHORT).show());
+
+        finish();
+
+        // Uruchom aktywność ponownie
+        Intent intent = new Intent(PatientVisitsActivity.this, PatientVisitsActivity.class);
+        intent.putExtra("docId",docId);
+        startActivity(intent);
+
     }
 
 
@@ -410,6 +424,7 @@ public class PatientVisitsActivity extends AppCompatActivity {
                     .addOnSuccessListener(aVoid -> Log.e("UpdateHourState", "Hour updated"))
                     .addOnFailureListener(e -> Toast.makeText(PatientVisitsActivity.this, "Błąd podczas aktualizacji godziny", Toast.LENGTH_SHORT).show());
         }
+
     }
 
     ///
@@ -478,5 +493,6 @@ public class PatientVisitsActivity extends AppCompatActivity {
         super.onResume();
         patientVisitAdapter.notifyDataSetChanged();
     }
+
 }
 
