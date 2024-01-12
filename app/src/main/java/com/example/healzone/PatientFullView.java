@@ -295,6 +295,8 @@ public class PatientFullView extends AppCompatActivity {
                 openPdf(filePath);
 
             } catch (FileNotFoundException e) {
+                Log.d("PDF_DEBUG", "File Path: " + filePath);
+
                 e.printStackTrace();
                 Toast.makeText(this, "Błąd generowania PDF: Plik nie znaleziony", Toast.LENGTH_SHORT).show();
             } catch (DocumentException e) {

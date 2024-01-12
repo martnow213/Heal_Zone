@@ -71,10 +71,8 @@ public class CalendarActivity extends AppCompatActivity {
                         return;
                     }
 
-                    // Get new FCM registration token
                     String token = task.getResult();
 
-                    // Log and toast
                     System.out.println(token);
                 });
 
